@@ -1,65 +1,91 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import InsenTable from '@/components/Insen/InsenTable';
+import InsenRightPanel from '@/components/Insen/InsenRightPanel';
+import YosenChart from '@/components/Yosen/YosenChart';
+import YosenRightPanel from '@/components/Yosen/YosenRightPanel';
+import TaiUnTable from '@/components/TaiUn/TaiUnTable';
+import { calcMeisei } from '@/lib/sanmeigaku/insen';
+import { calcYosen } from '@/lib/sanmeigaku/yosen';
+import { calcTaiUn } from '@/lib/sanmeigaku/taiun';
+import type { Meisei } from '@/lib/sanmeigaku/insen';
+import type { Yosen } from '@/lib/sanmeigaku/yosen';
+import type { TaiUn } from '@/lib/sanmeigaku/taiun';
 
 export default function Home() {
+  const [birthdate, setBirthdate] = useState('');
+  const [parsedDate, setParsedDate] = useState<{ year: number; month: number; day: number } | null>(null);
+  const [meisei, setMeisei] = useState<Meisei | null>(null);
+  const [yosen, setYosen] = useState<Yosen | null>(null);
+  const [taiun, setTaiun] = useState<TaiUn | null>(null);
+  const [error, setError] = useState('');
+
+  const handleCalc = () => {
+    if (!birthdate) {
+      setError('生年月日を入力してください');
+      return;
+    }
+    setError('');
+    const [year, month, day] = birthdate.split('-').map(Number);
+    if (!year || !month || !day) {
+      setError('正しい日付を入力してください');
+      return;
+    }
+    const m = calcMeisei(year, month, day);
+    const y = calcYosen(m);
+    const t = calcTaiUn(m, year, month, day);
+    setParsedDate({ year, month, day });
+    setMeisei(m);
+    setYosen(y);
+    setTaiun(t);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-gray-50 flex flex-col items-center py-10 px-4 pb-16">
+      {/* ヘッダー */}
+      <div className="mb-8 text-center">
+        <h1 className="text-2xl font-bold text-gray-800 tracking-wide">算命学 命式鑑定</h1>
+        <p className="text-sm text-gray-500 mt-1">生年月日から陰占・陽占を算出します</p>
+      </div>
+
+      {/* 入力フォーム */}
+      <div className="bg-white border border-gray-200 rounded-lg p-5 w-full max-w-2xl mb-6 shadow-sm">
+        <label className="block text-sm text-gray-600 mb-1 font-medium">生年月日</label>
+        <input
+          type="date"
+          value={birthdate}
+          onChange={(e) => setBirthdate(e.target.value)}
+          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+        <button
+          onClick={handleCalc}
+          className="mt-3 w-full bg-gray-800 text-white rounded py-2 text-sm font-medium hover:bg-gray-700 transition-colors"
+        >
+          命式を算出する
+        </button>
+      </div>
+
+      {/* 結果表示 */}
+      {meisei && yosen && taiun && parsedDate && (
+        <div className="flex flex-col gap-8 w-full max-w-5xl">
+          {/* 陰占: 左グリッド + 右タブ */}
+          <section className="flex flex-col lg:flex-row gap-4 items-stretch w-full">
+            <InsenTable meisei={meisei} />
+            <InsenRightPanel meisei={meisei} />
+          </section>
+          {/* 陽占: 左星図 + 右タブ */}
+          <section className="flex flex-col lg:flex-row gap-4 items-stretch w-full">
+            <YosenChart yosen={yosen} />
+            <YosenRightPanel yosen={yosen} />
+          </section>
+          {/* 大運 */}
+          <section className="w-full">
+            <TaiUnTable taiun={taiun} />
+          </section>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      )}
+    </main>
   );
 }
