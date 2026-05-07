@@ -11,20 +11,23 @@
 ```
 .company/
 ├── CLAUDE.md
-└── secretary/
+├── secretary/
+│   ├── CLAUDE.md
+│   ├── inbox/
+│   ├── todos/
+│   └── notes/
+└── marketing/
     ├── CLAUDE.md
-    ├── inbox/
-    ├── todos/
-    └── notes/
+    ├── content-plan/
+    └── campaigns/
 ```
-
-
 
 ## 部署一覧
 
 | 部署 | フォルダ | 役割 |
 |------|---------|------|
 | 秘書室 | secretary | 窓口・相談役。TODO管理、壁打ち、メモ。常設。 |
+| マーケティング | marketing | SNS戦略・コンテンツ企画・集客。 |
 
 
 ## 運営ルール

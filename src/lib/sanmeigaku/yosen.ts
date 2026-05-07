@@ -154,8 +154,8 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(nichikan, nenshi),
   };
 
-  // 北西（左中）: 日支の蔵干[1] / 日支
-  const kitanishiKan = niZokkan[1] ?? niZokkan[0] ?? nichikan;
+  // 西（配偶者）: 日支の蔵干本気 / 日支
+  const kitanishiKan = niZokkan[0] ?? nichikan;
   const kitanishi: SeiBag = {
     sei: calcShusei(nichikan, kitanishiKan),
     junisei: calcJunisei(kitanishiKan, nichishi),
@@ -174,8 +174,9 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(nichikan, nichishi),
   };
 
-  // 奥（精神）: 日支の蔵干本気 / 日支
-  const okuKan = niZokkan[0] ?? nichikan;
+  // 奥（精神）: 日干の陰陽反転 / 日支
+  const okuKanIndex = (nichikanIndex % 2 === 0) ? nichikanIndex + 1 : nichikanIndex - 1;
+  const okuKan = JIKKAN[(okuKanIndex + 10) % 10];
   const oku: SeiBag = {
     sei: calcShusei(nichikan, okuKan),
     junisei: calcJunisei(okuKan, nichishi),
