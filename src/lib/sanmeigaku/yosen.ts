@@ -39,7 +39,7 @@ const JUNISEI_ENERGY: Record<string, number> = {
 
 function calcShinkyoBun(points: number): string {
   if (points >= 34) return '最身強';
-  if (points >= 27) return '身強';
+  if (points >= 30) return '身強';
   if (points >= 16) return '身中';
   if (points >= 9)  return '身弱';
   return '最身弱';
