@@ -269,12 +269,27 @@ export function buildPersonCategories(yosen: Yosen): PersonCategories | null {
   return CATEGORY_DATA[yosen.chuo.sei] ?? null;
 }
 
+const HONNO_MAP: Record<string, string> = {
+  貫索星: '守備本能',
+  石門星: '守備本能',
+  鳳閣星: '伝達本能',
+  調舒星: '伝達本能',
+  禄存星: '魅力本能',
+  司禄星: '魅力本能',
+  車騎星: '攻撃本能',
+  牽牛星: '攻撃本能',
+  龍高星: '習得本能',
+  玉堂星: '習得本能',
+};
+
 /** 参考UIに合わせた陽占特徴 */
 export function buildYosenTokuchoLines(yosen: Yosen): YosenLine[] {
   const kisei = pickKiseiStar(yosen);
+  const honno = HONNO_MAP[yosen.chuo.sei] ?? '';
   return [
     { kind: 'emphasis', text: '純の宿命 (3純 2濁)' },
     { kind: 'emphasis', text: yosen.shinkyoBun },
+    ...(honno ? [{ kind: 'plain' as const, text: `${honno} が強い` }] : []),
     { kind: 'emphasis', text: '井乱局(中)' },
     { kind: 'emphasis', text: '曲財局(強)' },
     { kind: 'emphasis', text: '三麗局' },
