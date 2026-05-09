@@ -72,6 +72,12 @@ export const JUNISEI_TABLE: Record<string, string[]> = {
   辛: ['天貴星', '天印星', '天報星', '天馳星', '天庫星', '天極星', '天胡星', '天堂星', '天将星', '天禄星', '天南星', '天恍星'],
 };
 
+// 蔵干中気を取得（3蔵干ある地支のみindex[1]が中気、2つ以下は余気のため本気を使用）
+function getChuki(zokkan: string[], fallback: string): string {
+  if (zokkan.length >= 3) return zokkan[1] ?? zokkan[0] ?? fallback;
+  return zokkan[0] ?? fallback;
+}
+
 // 主星を計算（日干と対象干の関係から）
 function calcShusei(nichikan: string, targetKan: string): string {
   const index = KANSHI_RELATION[nichikan]?.[targetKan] ?? 0;
@@ -126,15 +132,15 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(getkan, getshi),
   };
 
-  // 中央（自分）: 月支の蔵干中気 / 月支
-  const chuoKan = getZokkan[1] ?? getZokkan[0] ?? getkan;
+  // 中央（自分）: 月支の蔵干中気 / 月支（蔵干3つの場合のみindex[1]が中気）
+  const chuoKan = getChuki(getZokkan, getkan);
   const chuo: SeiBag = {
     sei: calcShusei(nichikan, chuoKan),
     junisei: calcJunisei(chuoKan, getshi),
   };
 
   // 東（兄弟・社会）: 年支の蔵干中気 / 年支
-  const higashiKan = nenZokkan[1] ?? nenZokkan[0] ?? nenkan;
+  const higashiKan = getChuki(nenZokkan, nenkan);
   const higashi: SeiBag = {
     sei: calcShusei(nichikan, higashiKan),
     junisei: calcJunisei(higashiKan, nenshi),
@@ -154,8 +160,8 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(nichikan, nenshi),
   };
 
-  // 西（配偶者）: 日支の蔵干中気 / 日支
-  const kitanishiKan = niZokkan[1] ?? niZokkan[0] ?? nichikan;
+  // 西（配偶者）: 日支の蔵干中気 / 日支（蔵干3つの場合のみindex[1]が中気）
+  const kitanishiKan = getChuki(niZokkan, nichikan);
   const kitanishi: SeiBag = {
     sei: calcShusei(nichikan, kitanishiKan),
     junisei: calcJunisei(kitanishiKan, nichishi),
