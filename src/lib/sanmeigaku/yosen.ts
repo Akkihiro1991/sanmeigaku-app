@@ -126,15 +126,15 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(getkan, getshi),
   };
 
-  // 中央（自分）: 月支の蔵干本気 / 月支
-  const chuoKan = getZokkan[0] ?? getkan;
+  // 中央（自分）: 月支の蔵干中気 / 月支
+  const chuoKan = getZokkan[1] ?? getZokkan[0] ?? getkan;
   const chuo: SeiBag = {
     sei: calcShusei(nichikan, chuoKan),
     junisei: calcJunisei(chuoKan, getshi),
   };
 
-  // 東（兄弟・社会）: 年支の蔵干本気 / 年支
-  const higashiKan = nenZokkan[0] ?? nenkan;
+  // 東（兄弟・社会）: 年支の蔵干中気 / 年支
+  const higashiKan = nenZokkan[1] ?? nenZokkan[0] ?? nenkan;
   const higashi: SeiBag = {
     sei: calcShusei(nichikan, higashiKan),
     junisei: calcJunisei(higashiKan, nenshi),
@@ -154,8 +154,8 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(nichikan, nenshi),
   };
 
-  // 西（配偶者）: 日支の蔵干本気 / 日支
-  const kitanishiKan = niZokkan[0] ?? nichikan;
+  // 西（配偶者）: 日支の蔵干中気 / 日支
+  const kitanishiKan = niZokkan[1] ?? niZokkan[0] ?? nichikan;
   const kitanishi: SeiBag = {
     sei: calcShusei(nichikan, kitanishiKan),
     junisei: calcJunisei(kitanishiKan, nichishi),
