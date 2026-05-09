@@ -84,6 +84,33 @@ export default function Home() {
           <section className="w-full">
             <TaiUnTable taiun={taiun} />
           </section>
+
+          {/* 鑑定CTA */}
+          <section className="w-full">
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 text-white text-center shadow-lg">
+              <p className="text-xs tracking-widest text-gray-400 mb-1">READING SERVICE</p>
+              <h2 className="text-lg font-bold mb-1">この命式をもっと深く読み解きたい方へ</h2>
+              <p className="text-sm text-gray-300 mb-6">算命学のプロが、あなたの宿命・才能・運気の流れを丁寧に鑑定します</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+                <div className="bg-white/10 rounded-lg px-6 py-4 flex-1 max-w-xs mx-auto sm:mx-0">
+                  <p className="text-xs text-gray-400 mb-1">テキスト鑑定</p>
+                  <p className="text-2xl font-bold mb-1">¥3,000</p>
+                  <p className="text-xs text-gray-300">詳細な鑑定文をメッセージでお届け</p>
+                </div>
+                <div className="bg-white/10 rounded-lg px-6 py-4 flex-1 max-w-xs mx-auto sm:mx-0">
+                  <p className="text-xs text-gray-400 mb-1">オンライン鑑定</p>
+                  <p className="text-2xl font-bold mb-1">¥6,000</p>
+                  <p className="text-xs text-gray-300">30分 / ビデオ通話で直接ご相談</p>
+                </div>
+              </div>
+              <a
+                href="#"
+                className="inline-block bg-white text-gray-900 font-bold text-sm px-8 py-3 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                お申し込み・お問い合わせ
+              </a>
+            </div>
+          </section>
         </div>
       )}
     </main>
