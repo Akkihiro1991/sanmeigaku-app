@@ -104,10 +104,12 @@ export default function Home() {
                 </div>
               </div>
               <a
-                href="#"
+                href="https://x.com/tanukichi_sanme"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block bg-white text-gray-900 font-bold text-sm px-8 py-3 rounded-full hover:bg-gray-100 transition-colors"
               >
-                お申し込み・お問い合わせ
+                X（旧Twitter）からお申し込み
               </a>
             </div>
           </section>
