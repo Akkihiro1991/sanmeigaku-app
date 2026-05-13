@@ -1,4 +1,4 @@
-import { JIKKAN, JUNISHI, JUSSEI, JUNISEI, KANSHI_RELATION, ZOKKAN } from './constants';
+import { JIKKAN, JUNISHI, JUSSEI, JUNISEI, KANSHI_RELATION, ZOKKAN, GOGYO } from './constants';
 import type { Meisei } from './insen';
 
 export interface SeiBag {
@@ -78,6 +78,13 @@ function getChuki(zokkan: string[], fallback: string): string {
   return zokkan[0] ?? fallback;
 }
 
+// 人体星図の中央・東用: 比劫（日干と同じ五行）の蔵干を除いた最初の蔵干を返す
+function getNonBijusei(zokkan: string[], nichikan: string, fallback: string): string {
+  const myGogyo = GOGYO[nichikan as keyof typeof GOGYO];
+  const filtered = zokkan.filter(k => GOGYO[k as keyof typeof GOGYO] !== myGogyo);
+  return filtered[0] ?? zokkan[0] ?? fallback;
+}
+
 // 主星を計算（日干と対象干の関係から）
 function calcShusei(nichikan: string, targetKan: string): string {
   const index = KANSHI_RELATION[nichikan]?.[targetKan] ?? 0;
@@ -132,15 +139,15 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(getkan, getshi),
   };
 
-  // 中央（自分）: 月支の蔵干中気 / 月支（蔵干3つの場合のみindex[1]が中気）
-  const chuoKan = getChuki(getZokkan, getkan);
+  // 中央（自分）: 月支の蔵干から比劫(同五行)を除いた最初の干
+  const chuoKan = getNonBijusei(getZokkan, nichikan, getkan);
   const chuo: SeiBag = {
     sei: calcShusei(nichikan, chuoKan),
     junisei: calcJunisei(chuoKan, getshi),
   };
 
-  // 東（兄弟・社会）: 年支の蔵干中気 / 年支
-  const higashiKan = getChuki(nenZokkan, nenkan);
+  // 東（兄弟・社会）: 年支の蔵干から比劫(同五行)を除いた最初の干
+  const higashiKan = getNonBijusei(nenZokkan, nichikan, nenkan);
   const higashi: SeiBag = {
     sei: calcShusei(nichikan, higashiKan),
     junisei: calcJunisei(higashiKan, nenshi),
