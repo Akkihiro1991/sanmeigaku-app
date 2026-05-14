@@ -146,8 +146,8 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(chuoKan, getshi),
   };
 
-  // 東（兄弟・社会）: 年支の蔵干から比劫(同五行)を除いた最初の干
-  const higashiKan = getNonBijusei(nenZokkan, nichikan, nenkan);
+  // 東（兄弟・社会）: 年支の蔵干本気（比劫フィルタなし）
+  const higashiKan = nenZokkan[0] ?? nenkan;
   const higashi: SeiBag = {
     sei: calcShusei(nichikan, higashiKan),
     junisei: calcJunisei(higashiKan, nenshi),
@@ -203,7 +203,12 @@ export function calcYosen(meisei: Meisei): Yosen {
     (JUNISEI_ENERGY[nenJunisei] ?? 0) +
     (JUNISEI_ENERGY[getJunisei] ?? 0) +
     (JUNISEI_ENERGY[niJunisei]  ?? 0);
-  const shinkyoBun = calcShinkyoBun(shinkyoPoints);
+  let shinkyoBun = calcShinkyoBun(shinkyoPoints);
+  // 天将星（帝旺）を持つ場合は身強以上を保証
+  const hasTeisho = [nenJunisei, getJunisei, niJunisei].includes('天将星');
+  if (hasTeisho && ['身中', '身弱', '最身弱'].includes(shinkyoBun)) {
+    shinkyoBun = '身強';
+  }
 
   return { chuo, kita, minami, higashi, nishi, kitahigashi, kitanishi, minamihigashi, minamishi, oku, shinkyoPoints, shinkyoBun };
 }

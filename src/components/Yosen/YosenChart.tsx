@@ -24,7 +24,7 @@ export default function YosenChart({ yosen }: Props) {
       { kind: 'corner', junisei: yosen.kitahigashi.junisei },
     ],
     [
-      { kind: 'star', key: 'kitanishi', circle: '④' },
+      { kind: 'star', key: 'nishi', circle: '④' },
       { kind: 'star', key: 'chuo', circle: '②' },
       { kind: 'star', key: 'higashi', circle: '③' },
     ],
