@@ -41,7 +41,7 @@ function calcShinkyoBun(points: number): string {
   if (points >= 34) return '最身強';
   if (points >= 30) return '身強';
   if (points >= 16) return '身中';
-  if (points >= 9)  return '身弱';
+  if (points >= 8)  return '身弱';
   return '最身弱';
 }
 
@@ -153,9 +153,8 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(higashiKan, nenshi),
   };
 
-  // 西（配偶者）: 日干の陰陽反対 / 日支
-  const nishiKanIndex = (nichikanIndex % 2 === 0) ? nichikanIndex + 1 : nichikanIndex - 1;
-  const nishiKan = JIKKAN[(nishiKanIndex + 10) % 10];
+  // 西（配偶者）: 日支の蔵干本気 / 日支
+  const nishiKan = niZokkan[0] ?? nichikan;
   const nishi: SeiBag = {
     sei: calcShusei(nichikan, nishiKan),
     junisei: calcJunisei(nishiKan, nichishi),
