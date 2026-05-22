@@ -396,6 +396,61 @@ export default function TenchusatsuPage() {
             </div>
           </div>
 
+          {/* 今の時期のアドバイス */}
+          {(() => {
+            const { active, shi } = result.status;
+            const periods = calcTenchusatsuPeriods(result.tc);
+            const nextPeriod = periods.find(p => p.status === 'future');
+            const yearsUntilNext = nextPeriod ? nextPeriod.year1 - new Date().getFullYear() : null;
+            const soonWarning = !active && yearsUntilNext !== null && yearsUntilNext <= 2;
+
+            const activeAdvice: Record<string, string[]> = {
+              子丑天中殺: ['大きな投資・引越し・転職などの決断はいったん保留', '学び・資格取得・スキルアップに集中する絶好機', '身近な人間関係を丁寧に整理・深めていく'],
+              寅卯天中殺: ['新規の人間関係より、既存の縁を大切にする', '体調管理を最優先。無理なスケジュールを組まない', '習得・練習・内省に時間を充てると後で活きる'],
+              辰巳天中殺: ['大きなビジネス判断・契約事は後回しに', '柔軟さを持って。「計画通り」を手放す練習', '精神的な安定を意識。一人の時間を意図的に作る'],
+              午未天中殺: ['SNSや感情的な発言は特に慎重に', '恋愛・対人トラブルは受け流す意識で', '日記・瞑想など、内面を整える習慣を始める'],
+              申酉天中殺: ['結果より「プロセス」を楽しむ意識に切り替える', '独立・起業など大きな変化は見極めをしっかりと', '人のサポートや裏方の仕事で力を発揮しやすい'],
+              戌亥天中殺: ['お金・財産に関わる大きな動きは慎重に', '孤独な時間を恐れず、自分の信念を見直す', '過去の縁が戻ってきやすい。再会を大切に'],
+            };
+
+            const inactiveAdvice = [
+              '天中殺外は宿命のエネルギーが充実している時期',
+              '新しいことを始める・挑戦する・決断する好機',
+              '人間関係を広げ、チャンスを積極的につかみにいく',
+            ];
+
+            return (
+              <div className={`rounded-xl p-5 border ${active ? 'bg-red-500/10 border-red-500/30' : 'bg-emerald-500/10 border-emerald-500/30'}`}>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">{active ? '🚨' : '✅'}</span>
+                  <div>
+                    <p className="text-sm font-bold text-white">
+                      {active ? `今（${shi}年）は天中殺期間中` : `今（${shi}年）は天中殺期間外`}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {active ? 'この時期の過ごし方のポイント' : 'エネルギーが充実している時期'}
+                    </p>
+                  </div>
+                </div>
+                <ul className="flex flex-col gap-2">
+                  {(active ? (activeAdvice[result.tc.name] ?? []) : inactiveAdvice).map((line, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-200">
+                      <span className={`shrink-0 font-bold text-xs mt-0.5 ${active ? 'text-red-400' : 'text-emerald-400'}`}>{active ? '•' : '✓'}</span>
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+                {soonWarning && (
+                  <div className="mt-3 pt-3 border-t border-white/10">
+                    <p className="text-xs text-yellow-400">
+                      ⚠️ {yearsUntilNext === 1 ? '来年' : `${yearsUntilNext}年後`}（{nextPeriod!.year1}年）から天中殺が始まります。今のうちに大きな決断・仕込みを済ませておくと吉。
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
           {/* 天中殺の時期一覧 */}
           {(() => {
             const periods = calcTenchusatsuPeriods(result.tc);
