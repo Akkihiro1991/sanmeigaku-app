@@ -66,6 +66,25 @@ const TC_THEME: Record<string, { gradient: string; accent: string; light: string
   戌亥天中殺: { gradient: 'from-cyan-950 to-teal-900', accent: 'text-cyan-400', light: 'bg-cyan-900/30 border-cyan-700', kanji: '戌亥' },
 };
 
+function calcTenchusatsuPeriods(tc: Tenchusatsu): { year1: number; year2: number; status: 'past' | 'current' | 'future' }[] {
+  const currentYear = new Date().getFullYear();
+  const shi1Index = JUNISHI.indexOf(tc.voidShi1 as typeof JUNISHI[number]);
+  if (shi1Index === -1) return [];
+  const kCenter = Math.round((currentYear - 4 - shi1Index) / 12);
+  const all: { year1: number; year2: number; status: 'past' | 'current' | 'future' }[] = [];
+  for (let i = kCenter - 4; i <= kCenter + 4; i++) {
+    const year1 = 4 + shi1Index + 12 * i;
+    const year2 = year1 + 1;
+    const status: 'past' | 'current' | 'future' =
+      year2 < currentYear ? 'past' : year1 <= currentYear ? 'current' : 'future';
+    all.push({ year1, year2, status });
+  }
+  const past = all.filter(p => p.status === 'past').slice(-3);
+  const current = all.filter(p => p.status === 'current');
+  const future = all.filter(p => p.status === 'future').slice(0, 3);
+  return [...past, ...current, ...future];
+}
+
 function getCurrentNenshi(): string {
   const today = new Date();
   const year = today.getFullYear();
@@ -330,6 +349,44 @@ export default function TenchusatsuPage() {
               </p>
             </div>
           </div>
+
+          {/* 天中殺の時期一覧 */}
+          {(() => {
+            const periods = calcTenchusatsuPeriods(result.tc);
+            return (
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                <p className="text-xs tracking-widest text-gray-400 mb-1 uppercase">天中殺の時期</p>
+                <p className="text-xs text-gray-500 mb-4">12年に一度、2年間続く天中殺の周期</p>
+                <ul className="flex flex-col gap-2">
+                  {periods.map(({ year1, year2, status }) => (
+                    <li
+                      key={year1}
+                      className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm ${
+                        status === 'current'
+                          ? 'bg-red-500/15 border border-red-500/40'
+                          : status === 'future'
+                          ? 'bg-white/5 border border-white/10'
+                          : 'border border-white/5 opacity-40'
+                      }`}
+                    >
+                      <span className={`font-medium ${status === 'current' ? 'text-white' : 'text-gray-300'}`}>
+                        {year1}年 〜 {year2}年
+                      </span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        status === 'current'
+                          ? 'bg-red-500/30 text-red-300'
+                          : status === 'future'
+                          ? 'bg-white/10 text-gray-400'
+                          : 'text-gray-600'
+                      }`}>
+                        {status === 'current' ? '🚨 現在' : status === 'future' ? '⏳ 予定' : '終了'}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })()}
 
           {/* シェア画像 */}
           {imgUrl && (
