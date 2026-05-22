@@ -21,27 +21,41 @@ export interface Yosen {
   shinkyoBun: string;    // 最身強/身強/身中/身弱/最身弱
 }
 
-// 十二大従星エネルギー点数（長生=12,沐浴=2,冠帯=10,臨官=12,帝旺=16,衰=10,病=4,死=2,墓=8,絶=2,胎=4,養=8）
-const JUNISEI_ENERGY: Record<string, number> = {
-  天貴星: 12, // 長生
-  天恍星: 2,  // 沐浴
-  天南星: 10, // 冠帯
-  天禄星: 12, // 臨官
-  天将星: 16, // 帝旺
-  天堂星: 10, // 衰
-  天胡星: 4,  // 病
-  天極星: 2,  // 死
-  天庫星: 8,  // 墓
-  天馳星: 2,  // 絶
-  天報星: 4,  // 胎
-  天印星: 8,  // 養
+// 十二大従星のカテゴリ（弱星/中星/強星）
+// 弱星: 天馳星(絶)・天極星(死)・天報星(胎)・天胡星(病)
+// 中星: 天庫星(墓)・天印星(養)・天恍星(沐浴)・天堂星(衰)・天貴星(長生)
+// 強星: 天南星(冠帯)・天禄星(臨官)・天将星(帝旺)
+const JUSEI_CATEGORY: Record<string, 'weak' | 'middle' | 'strong'> = {
+  天馳星: 'weak',
+  天極星: 'weak',
+  天報星: 'weak',
+  天胡星: 'weak',
+  天庫星: 'middle',
+  天印星: 'middle',
+  天恍星: 'middle',
+  天堂星: 'middle',
+  天貴星: 'middle',
+  天南星: 'strong',
+  天禄星: 'strong',
+  天将星: 'strong',
 };
 
-function calcShinkyoBun(points: number): string {
-  if (points >= 34) return '最身強';
-  if (points >= 30) return '身強';
-  if (points >= 16) return '身中';
-  if (points >= 8)  return '身弱';
+function calcShinkyoBun(nen: string, get: string, ni: string): string {
+  const cats = [nen, get, ni].map(s => JUSEI_CATEGORY[s] ?? 'weak');
+  const strong = cats.filter(c => c === 'strong').length;
+  const middle = cats.filter(c => c === 'middle').length;
+  const weak   = cats.filter(c => c === 'weak').length;
+
+  if (strong >= 2) return '最身強';
+  if (strong >= 1) return '身強';
+  if (weak === 3)  return '最身弱';
+  if (middle === 1 && weak === 2) return '身弱';
+  if (middle === 2 && weak === 1) {
+    const stars = [nen, get, ni];
+    const mid = stars.filter(s => JUSEI_CATEGORY[s] === 'middle');
+    return (mid.includes('天印星') || mid.includes('天庫星')) ? '身弱' : '身中';
+  }
+  if (middle === 3) return '身中';
   return '最身弱';
 }
 
@@ -78,7 +92,14 @@ function getChuki(zokkan: string[], fallback: string): string {
   return zokkan[0] ?? fallback;
 }
 
-// 人体星図の中央・東用: 比劫（日干と同じ五行）の蔵干を除いた最初の蔵干を返す
+// 人体星図の中央用: 日干と同じ五行（比肩）の蔵干を優先で返す（なければ先頭）
+function getBijuKan(zokkan: string[], nichikan: string, fallback: string): string {
+  const myGogyo = GOGYO[nichikan as keyof typeof GOGYO];
+  const matched = zokkan.find(k => GOGYO[k as keyof typeof GOGYO] === myGogyo);
+  return matched ?? zokkan[0] ?? fallback;
+}
+
+// 人体星図の東用: 比劫（日干と同じ五行）の蔵干を除いた最初の蔵干を返す
 function getNonBijusei(zokkan: string[], nichikan: string, fallback: string): string {
   const myGogyo = GOGYO[nichikan as keyof typeof GOGYO];
   const filtered = zokkan.filter(k => GOGYO[k as keyof typeof GOGYO] !== myGogyo);
@@ -139,8 +160,8 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(getkan, getshi),
   };
 
-  // 中央（自分）: 月支の蔵干から比劫(同五行)を除いた最初の干
-  const chuoKan = getNonBijusei(getZokkan, nichikan, getkan);
+  // 中央（自分）: 月支の蔵干から日干と同五行（比肩）を優先で選ぶ
+  const chuoKan = getBijuKan(getZokkan, nichikan, getkan);
   const chuo: SeiBag = {
     sei: calcShusei(nichikan, chuoKan),
     junisei: calcJunisei(chuoKan, getshi),
@@ -194,20 +215,11 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(okuKan, nichishi),
   };
 
-  // 身強/身弱: 三柱（年支・月支・日支）の十二大従星エネルギー合計
-  const nenJunisei  = calcJunisei(nichikan, nenshi);
-  const getJunisei  = calcJunisei(nichikan, getshi);
-  const niJunisei   = calcJunisei(nichikan, nichishi);
-  const shinkyoPoints =
-    (JUNISEI_ENERGY[nenJunisei] ?? 0) +
-    (JUNISEI_ENERGY[getJunisei] ?? 0) +
-    (JUNISEI_ENERGY[niJunisei]  ?? 0);
-  let shinkyoBun = calcShinkyoBun(shinkyoPoints);
-  // 天将星（帝旺）を持つ場合は身強以上を保証
-  const hasTeisho = [nenJunisei, getJunisei, niJunisei].includes('天将星');
-  if (hasTeisho && ['身中', '身弱', '最身弱'].includes(shinkyoBun)) {
-    shinkyoBun = '身強';
-  }
+  // 身強/身弱: 三柱（年支・月支・日支）の十二大従星カテゴリで判定
+  const nenJunisei = calcJunisei(nichikan, nenshi);
+  const getJunisei = calcJunisei(nichikan, getshi);
+  const niJunisei  = calcJunisei(nichikan, nichishi);
+  const shinkyoBun = calcShinkyoBun(nenJunisei, getJunisei, niJunisei);
 
-  return { chuo, kita, minami, higashi, nishi, kitahigashi, kitanishi, minamihigashi, minamishi, oku, shinkyoPoints, shinkyoBun };
+  return { chuo, kita, minami, higashi, nishi, kitahigashi, kitanishi, minamihigashi, minamishi, oku, shinkyoPoints: 0, shinkyoBun };
 }
