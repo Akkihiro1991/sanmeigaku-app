@@ -112,7 +112,7 @@ export const KANSHI_RELATION: Record<string, Record<string, number>> = {
 // 地支蔵干（各地支に内包される天干）
 export const ZOKKAN: Record<string, string[]> = {
   子: ['癸'],
-  丑: ['癸', '辛', '己'],
+  丑: ['己', '辛', '癸'],
   寅: ['甲', '丙', '戊'],
   卯: ['乙'],
   辰: ['戊', '癸', '乙'],
