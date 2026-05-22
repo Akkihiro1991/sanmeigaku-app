@@ -6,6 +6,9 @@ import { calcTenchusatsu } from '@/lib/sanmeigaku/tenchusatsu';
 import { JUNISHI, SETSU_DAYS } from '@/lib/sanmeigaku/constants';
 import type { Tenchusatsu } from '@/lib/sanmeigaku/tenchusatsu';
 
+const NOTE_FREE_URL = 'https://note.com/tanukichi_sanme/n/n_tenchusatsu_free';
+const NOTE_PAID_URL = 'https://note.com/tanukichi_sanme/n/n_tenchusatsu_complete';
+
 const ADVICE: Record<string, string[]> = {
   子丑天中殺: [
     '北方・冬のエネルギーが空き、堅実さが揺らぎやすい時期です',
@@ -344,6 +347,19 @@ export default function TenchusatsuPage() {
                 宿命のエネルギーが戻り、行動が実りやすい時期に。天中殺中に積み上げた学び・準備・人間関係が<span className="text-yellow-400">開花するタイミング</span>です。だから天中殺中は「仕込み期間」として使うのが正解。
               </p>
             </div>
+
+            <a
+              href={NOTE_FREE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between bg-white/5 border border-white/15 hover:bg-white/10 rounded-xl px-5 py-4 transition-colors group"
+            >
+              <div>
+                <p className="text-xs text-gray-400 mb-0.5">無料で読む</p>
+                <p className="text-sm font-medium text-white">天中殺とは？基本から過ごし方まで完全解説</p>
+              </div>
+              <span className="text-gray-400 group-hover:text-white transition-colors shrink-0 ml-3">→</span>
+            </a>
           </div>
         </details>
       </div>
@@ -388,11 +404,19 @@ export default function TenchusatsuPage() {
                 </li>
               ))}
             </ul>
-            <div className="mt-4 pt-4 border-t border-white/10 text-center">
-              <p className="text-xs text-gray-400">
-                🔒 <span className="text-white font-bold">有料版</span>では恋愛・仕事・健康・大運との重なりまで<br />
-                徹底解説したフル鑑定が読めます（近日公開）
-              </p>
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <a
+                href={NOTE_PAID_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between hover:opacity-80 transition-opacity group"
+              >
+                <div>
+                  <p className="text-xs text-gray-400 mb-0.5">📖 有料ガイドで深める</p>
+                  <p className="text-xs text-white">タイプ別の過ごし方・明けた後の動き方・30人の実例まで完全解説</p>
+                </div>
+                <span className="text-gray-400 group-hover:text-white transition-colors shrink-0 ml-3 text-sm">→</span>
+              </a>
             </div>
           </div>
 
@@ -488,6 +512,23 @@ export default function TenchusatsuPage() {
               </div>
             );
           })()}
+
+          {/* 有料note CTA */}
+          <a
+            href={NOTE_PAID_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block bg-gradient-to-br from-purple-950 to-indigo-950 border border-purple-700/40 rounded-xl p-5 hover:border-purple-500/60 transition-colors group"
+          >
+            <p className="text-xs tracking-widest text-purple-400 mb-2 uppercase">深く知る</p>
+            <h3 className="text-sm font-bold text-white mb-1">天中殺完全ガイド（有料）</h3>
+            <p className="text-xs text-gray-400 leading-relaxed mb-3">
+              タイプ別の正しい過ごし方・やってはいけないこと全リスト・明けたら何をするか・30人の鑑定データから見えた実例まで。素人でも100%わかる完全保存版。
+            </p>
+            <span className="inline-block text-xs font-bold text-purple-300 group-hover:text-white transition-colors">
+              記事を読む →
+            </span>
+          </a>
 
           {/* シェア画像 */}
           {imgUrl && (
