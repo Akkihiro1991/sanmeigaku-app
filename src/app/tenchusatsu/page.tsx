@@ -302,6 +302,52 @@ export default function TenchusatsuPage() {
         </button>
       </div>
 
+      {/* 天中殺とは？解説 */}
+      <div className="w-full max-w-lg mb-6">
+        <details className="group">
+          <summary className="flex items-center justify-between cursor-pointer bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-sm text-gray-300 font-medium select-none hover:bg-white/8 transition-colors">
+            <span>🔮 天中殺ってどんな時期？</span>
+            <span className="text-gray-500 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div className="mt-2 flex flex-col gap-3">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+              <p className="text-xs font-bold text-white mb-2">天中殺とは</p>
+              <p className="text-sm text-gray-300 leading-relaxed">
+                12年サイクルのうち<span className="text-white font-bold">2年間だけ</span>訪れる特別な時期。算命学では「干支が空く（＝宿命のエネルギーが弱まる）時期」と呼ばれます。怖い呪いや罰ではなく、<span className="text-yellow-400">誰にでも平等に訪れる自然な周期</span>です。
+              </p>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+              <p className="text-xs font-bold text-white mb-3">期間中に起きやすいこと</p>
+              <ul className="flex flex-col gap-2 text-sm text-gray-300">
+                <li className="flex items-start gap-2"><span className="text-red-400 shrink-0">•</span>新しく始めたことが思い通りに進みにくい</li>
+                <li className="flex items-start gap-2"><span className="text-red-400 shrink-0">•</span>人との縁が変わりやすく、環境が動きやすい</li>
+                <li className="flex items-start gap-2"><span className="text-red-400 shrink-0">•</span>感情の波が大きくなりやすい</li>
+                <li className="flex items-start gap-2"><span className="text-red-400 shrink-0">•</span>大きな決断の結果が読みにくい</li>
+              </ul>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+              <p className="text-xs font-bold text-white mb-3">どう過ごすといい？</p>
+              <ul className="flex flex-col gap-2 text-sm text-gray-300">
+                <li className="flex items-start gap-2"><span className="text-green-400 shrink-0">✓</span>内省・学び・準備に集中する</li>
+                <li className="flex items-start gap-2"><span className="text-green-400 shrink-0">✓</span>人間関係を整理・深める</li>
+                <li className="flex items-start gap-2"><span className="text-green-400 shrink-0">✓</span>「今は種まきの時期」と割り切って積み上げる</li>
+                <li className="flex items-start gap-2"><span className="text-red-400 shrink-0">✗</span>大きな投資・契約・結婚などは慎重に</li>
+                <li className="flex items-start gap-2"><span className="text-red-400 shrink-0">✗</span>感情的な発言・大きな方向転換は避ける</li>
+              </ul>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+              <p className="text-xs font-bold text-white mb-2">天中殺が明けたら</p>
+              <p className="text-sm text-gray-300 leading-relaxed">
+                宿命のエネルギーが戻り、行動が実りやすい時期に。天中殺中に積み上げた学び・準備・人間関係が<span className="text-yellow-400">開花するタイミング</span>です。だから天中殺中は「仕込み期間」として使うのが正解。
+              </p>
+            </div>
+          </div>
+        </details>
+      </div>
+
       {/* 結果 */}
       {result && theme && (
         <div className="w-full max-w-lg flex flex-col gap-5">
