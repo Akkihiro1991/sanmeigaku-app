@@ -126,10 +126,6 @@ export default function InsenTable({ meisei }: Props) {
           <span className="text-gray-400">日干</span>
           <span>{nitchu.kan}（{getGogyoKan(nitchu.kan)}・{getInyo(nitchu.kan)}）</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-400">天中殺</span>
-          <span className="text-rose-500">{tc.name}（{tc.voidShi1}{tc.voidGogyo1}・{tc.voidShi2}{tc.voidGogyo2}）</span>
-        </div>
       </div>
     </div>
   );

@@ -2,23 +2,18 @@
 
 import { useState } from 'react';
 import InsenTable from '@/components/Insen/InsenTable';
-import InsenRightPanel from '@/components/Insen/InsenRightPanel';
 import YosenChart from '@/components/Yosen/YosenChart';
 import YosenRightPanel from '@/components/Yosen/YosenRightPanel';
-import TaiUnTable from '@/components/TaiUn/TaiUnTable';
 import { calcMeisei } from '@/lib/sanmeigaku/insen';
 import { calcYosen } from '@/lib/sanmeigaku/yosen';
-import { calcTaiUn } from '@/lib/sanmeigaku/taiun';
 import type { Meisei } from '@/lib/sanmeigaku/insen';
 import type { Yosen } from '@/lib/sanmeigaku/yosen';
-import type { TaiUn } from '@/lib/sanmeigaku/taiun';
 
 export default function Home() {
   const [birthdate, setBirthdate] = useState('');
   const [parsedDate, setParsedDate] = useState<{ year: number; month: number; day: number } | null>(null);
   const [meisei, setMeisei] = useState<Meisei | null>(null);
   const [yosen, setYosen] = useState<Yosen | null>(null);
-  const [taiun, setTaiun] = useState<TaiUn | null>(null);
   const [error, setError] = useState('');
 
   const handleCalc = () => {
@@ -34,11 +29,9 @@ export default function Home() {
     }
     const m = calcMeisei(year, month, day);
     const y = calcYosen(m);
-    const t = calcTaiUn(m, year, month, day);
     setParsedDate({ year, month, day });
     setMeisei(m);
     setYosen(y);
-    setTaiun(t);
   };
 
   return (
@@ -68,21 +61,16 @@ export default function Home() {
       </div>
 
       {/* 結果表示 */}
-      {meisei && yosen && taiun && parsedDate && (
+      {meisei && yosen && parsedDate && (
         <div className="flex flex-col gap-8 w-full max-w-5xl">
-          {/* 陰占: 左グリッド + 右タブ */}
-          <section className="flex flex-col lg:flex-row gap-4 items-stretch w-full">
+          {/* 陰占 */}
+          <section className="w-full">
             <InsenTable meisei={meisei} />
-            <InsenRightPanel meisei={meisei} />
           </section>
           {/* 陽占: 左星図 + 右タブ */}
           <section className="flex flex-col lg:flex-row gap-4 items-stretch w-full">
             <YosenChart yosen={yosen} />
             <YosenRightPanel yosen={yosen} />
-          </section>
-          {/* 大運 */}
-          <section className="w-full">
-            <TaiUnTable taiun={taiun} />
           </section>
 
           {/* 鑑定CTA */}
