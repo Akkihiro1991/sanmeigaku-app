@@ -413,7 +413,7 @@ export default function TenchusatsuPage() {
               >
                 <div>
                   <p className="text-xs text-gray-400 mb-0.5">📖 有料ガイドで深める</p>
-                  <p className="text-xs text-white">タイプ別の過ごし方・明けた後の動き方・30人の実例まで完全解説</p>
+                  <p className="text-xs text-white">タイプ別の過ごし方・明けた後の動き方・実例まで完全解説</p>
                 </div>
                 <span className="text-gray-400 group-hover:text-white transition-colors shrink-0 ml-3 text-sm">→</span>
               </a>
@@ -523,7 +523,7 @@ export default function TenchusatsuPage() {
             <p className="text-xs tracking-widest text-purple-400 mb-2 uppercase">深く知る</p>
             <h3 className="text-sm font-bold text-white mb-1">天中殺完全ガイド（有料）</h3>
             <p className="text-xs text-gray-400 leading-relaxed mb-3">
-              タイプ別の正しい過ごし方・やってはいけないこと全リスト・明けたら何をするか・30人の鑑定データから見えた実例まで。素人でも100%わかる完全保存版。
+              タイプ別の正しい過ごし方・やってはいけないこと全リスト・明けたら何をするか・鑑定データから見えた実例まで。素人でも100%わかる完全保存版。
             </p>
             <span className="inline-block text-xs font-bold text-purple-300 group-hover:text-white transition-colors">
               記事を読む →
