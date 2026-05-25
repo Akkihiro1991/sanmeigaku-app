@@ -167,11 +167,11 @@ export function calcYosen(meisei: Meisei): Yosen {
     junisei: calcJunisei(chuoKan, getshi),
   };
 
-  // 東（兄弟・社会）: 年支の蔵干本気（比劫フィルタなし）
-  const higashiKan = nenZokkan[0] ?? nenkan;
+  // 東（兄弟・社会）: 月支の蔵干中気
+  const higashiKan = getChuki(getZokkan, getkan);
   const higashi: SeiBag = {
     sei: calcShusei(nichikan, higashiKan),
-    junisei: calcJunisei(higashiKan, nenshi),
+    junisei: calcJunisei(higashiKan, getshi),
   };
 
   // 西（配偶者）: 日支の蔵干本気 / 日支
