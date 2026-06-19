@@ -6,8 +6,8 @@ import { calcTenchusatsu } from '@/lib/sanmeigaku/tenchusatsu';
 import { JUNISHI, SETSU_DAYS } from '@/lib/sanmeigaku/constants';
 import type { Tenchusatsu } from '@/lib/sanmeigaku/tenchusatsu';
 
-const NOTE_FREE_URL = 'https://note.com/tanukichi_sanme/n/n_tenchusatsu_free';
-const NOTE_PAID_URL = 'https://note.com/tanukichi_sanme/n/n_tenchusatsu_complete';
+const NOTE_FREE_URL = 'https://note.com/tanukichi_sanme/n/n5af38530ecfb';
+const NOTE_PAID_URL = 'https://note.com/tanukichi_sanme/n/n40faf9e61e44';
 
 const ADVICE: Record<string, string[]> = {
   子丑天中殺: [
