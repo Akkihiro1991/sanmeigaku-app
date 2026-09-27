@@ -32,6 +32,15 @@ const CHUO_SEI_DESC: Record<string, string> = {
     '「知識と伝統」を愛する、深みのある知恵者です。学ぶことへの喜びが尽きず、物事の背景や歴史、本質を深く理解しようとします。表面的な流行よりも、時代を超えて通用する知識や価値を大切にします。\n\n教える・伝える・記録するという行為に天性の才能があり、受け取った知恵を次の世代に渡していく「継承者」としての役割を担うことが多いです。言葉を使う仕事——教育・出版・研究・コンサルティングなど——との相性が良く、専門性を深めることで評価が高まります。慎重で保守的な面があるため、大きなリスクを取るのが苦手なことも。しかし、それが安定と信頼につながります。じっくり学び、丁寧に積み上げる姿勢が、この人の最大の財産です。',
 };
 
+// 身強・身弱の簡単な説明（陽占特徴の見出し下に表示）
+const SHINKYO_BRIEF: Record<string, string> = {
+  最身強: '生まれ持ったエネルギーがとても大きいタイプ。じっとしているより、動いて発散するほど運が開きます。',
+  身強: 'エネルギーが強めのタイプ。自分から動いて道を切り開くほど、持ち味が生きます。',
+  身中: 'エネルギーのバランスが良いタイプ。動くときと休むときを柔軟に切り替えられます。',
+  身弱: 'エネルギーが控えめで繊細なタイプ。無理をせず、人や環境の力を借りるほど輝きます。',
+  最身弱: 'エネルギーがとても繊細なタイプ。自然体で周りに身を委ねるほど、不思議と運が味方します。',
+};
+
 const SHINKYO_SUFFIX: Record<string, string> = {
   最身強: 'エネルギーが非常に強く、意志と行動力が際立つ命式です。自分のやりたいことへの推進力が強い分、周囲を圧倒することもあります。そのパワーを意識的にコントロールすることが、さらなる飛躍につながります。',
   身強: '生命力・活力ともに充実しており、自分の意志で人生を切り開いていける力があります。困難にぶつかっても立ち直りが早く、主体的に動けるタフさが持ち味です。',
@@ -282,10 +291,27 @@ const HONNO_MAP: Record<string, string> = {
   玉堂星: '習得本能',
 };
 
+// 人体星図の5つの主星（北・東・中央・西・南）で最も多い本能を強い本能とする。
+// 同数のときは中心星の本能を優先し、中心星が含まれなければ併記する。
+export function calcStrongHonno(yosen: Yosen): string {
+  const stars = [yosen.kita, yosen.higashi, yosen.chuo, yosen.nishi, yosen.minami].map((b) => b.sei);
+  const counts = new Map<string, number>();
+  for (const sei of stars) {
+    const h = HONNO_MAP[sei];
+    if (h) counts.set(h, (counts.get(h) ?? 0) + 1);
+  }
+  const max = Math.max(0, ...counts.values());
+  const top = [...counts].filter(([, n]) => n === max).map(([h]) => h);
+  const chuoHonno = HONNO_MAP[yosen.chuo.sei];
+  if (top.length > 1 && chuoHonno && top.includes(chuoHonno)) return chuoHonno;
+  return top.join('・');
+}
+
 export function buildYosenTokuchoLines(yosen: Yosen): YosenLine[] {
-  const honno = HONNO_MAP[yosen.chuo.sei] ?? '';
+  // 強い本能（calcStrongHonno）は計算のみで非表示
+  const brief = SHINKYO_BRIEF[yosen.shinkyoBun];
   return [
     { kind: 'emphasis', text: yosen.shinkyoBun },
-    ...(honno ? [{ kind: 'plain' as const, text: `${honno} が強い` }] : []),
+    ...(brief ? [{ kind: 'plain' as const, text: brief }] : []),
   ];
 }

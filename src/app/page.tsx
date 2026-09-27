@@ -35,26 +35,34 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col items-center py-10 px-4 pb-16">
+    <main className="bg-wafu min-h-screen flex flex-col items-center py-12 sm:py-16 px-4 pb-20">
       {/* ヘッダー */}
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold text-gray-800 tracking-wide">算命学 命式鑑定</h1>
-        <p className="text-sm text-gray-500 mt-1">生年月日から陰占・陽占を算出します</p>
-      </div>
+      <header className="mb-10 text-center fade-up">
+        <p className="text-[10px] sm:text-xs tracking-[0.5em] text-kin/80 mb-3">SANMEIGAKU</p>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-washi tracking-[0.2em]">
+          算命学 命式鑑定
+        </h1>
+        <div className="mx-auto mt-4 mb-3 flex items-center justify-center gap-2 text-kin">
+          <span className="h-px w-12 bg-gradient-to-r from-transparent to-kin/70" />
+          <span className="text-xs">◆</span>
+          <span className="h-px w-12 bg-gradient-to-l from-transparent to-kin/70" />
+        </div>
+        <p className="text-sm text-washi-dim tracking-wider">生まれた日に宿る、あなたの星を読み解く</p>
+      </header>
 
       {/* 入力フォーム */}
-      <div className="bg-white border border-gray-200 rounded-lg p-5 w-full max-w-2xl mb-6 shadow-sm">
-        <label className="block text-sm text-gray-600 mb-1 font-medium">生年月日</label>
+      <div className="card-wafu p-5 sm:p-7 w-full max-w-xl mb-10 fade-up">
+        <label className="block font-serif text-sm text-kin-soft mb-2 tracking-widest">生年月日</label>
         <input
           type="date"
           value={birthdate}
           onChange={(e) => setBirthdate(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+          className="w-full bg-ai-950/70 border border-kin/30 text-washi rounded-lg px-4 py-3 text-base focus:outline-none focus:border-kin focus:ring-1 focus:ring-kin/60 transition"
         />
-        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+        {error && <p className="text-shu text-xs mt-2">{error}</p>}
         <button
           onClick={handleCalc}
-          className="mt-3 w-full bg-gray-800 text-white rounded py-2 text-sm font-medium hover:bg-gray-700 transition-colors"
+          className="mt-4 w-full rounded-lg py-3 font-serif text-base font-bold tracking-[0.3em] text-ai-950 bg-gradient-to-r from-kin via-kin-soft to-kin shadow-[0_4px_20px_rgba(201,169,110,0.25)] hover:brightness-110 active:scale-[0.99] transition"
         >
           命式を算出する
         </button>
@@ -62,44 +70,20 @@ export default function Home() {
 
       {/* 結果表示 */}
       {meisei && yosen && parsedDate && (
-        <div className="flex flex-col gap-8 w-full max-w-5xl">
-          {/* 陰占 */}
-          <section className="w-full">
+        <div key={`${parsedDate.year}-${parsedDate.month}-${parsedDate.day}`} className="flex flex-col gap-6 sm:gap-8 w-full max-w-5xl fade-up">
+          <p className="text-center font-serif text-washi-dim tracking-widest text-sm">
+            {parsedDate.year}年{parsedDate.month}月{parsedDate.day}日 生まれ
+          </p>
+
+          {/* 陰占 + 陽占 */}
+          <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full">
             <InsenTable meisei={meisei} />
-          </section>
-          {/* 陽占: 左星図 + 右タブ */}
-          <section className="flex flex-col lg:flex-row gap-4 items-stretch w-full">
             <YosenChart yosen={yosen} />
-            <YosenRightPanel yosen={yosen} />
           </section>
 
-          {/* 鑑定CTA */}
+          {/* 陽占特徴 */}
           <section className="w-full">
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 text-white text-center shadow-lg">
-              <p className="text-xs tracking-widest text-gray-400 mb-1">READING SERVICE</p>
-              <h2 className="text-lg font-bold mb-1">この命式をもっと深く読み解きたい方へ</h2>
-              <p className="text-sm text-gray-300 mb-6">算命学のプロが、あなたの宿命・才能・運気の流れを丁寧に鑑定します</p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-                <div className="bg-white/10 rounded-lg px-6 py-4 flex-1 max-w-xs mx-auto sm:mx-0">
-                  <p className="text-xs text-gray-400 mb-1">テキスト鑑定</p>
-                  <p className="text-2xl font-bold mb-1">¥3,000</p>
-                  <p className="text-xs text-gray-300">詳細な鑑定文をメッセージでお届け</p>
-                </div>
-                <div className="bg-white/10 rounded-lg px-6 py-4 flex-1 max-w-xs mx-auto sm:mx-0">
-                  <p className="text-xs text-gray-400 mb-1">オンライン鑑定</p>
-                  <p className="text-2xl font-bold mb-1">¥6,000</p>
-                  <p className="text-xs text-gray-300">30分 / ビデオ通話で直接ご相談</p>
-                </div>
-              </div>
-              <a
-                href="https://x.com/tanukichi_sanme"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-white text-gray-900 font-bold text-sm px-8 py-3 rounded-full hover:bg-gray-100 transition-colors"
-              >
-                X（旧Twitter）からお申し込み
-              </a>
-            </div>
+            <YosenRightPanel yosen={yosen} />
           </section>
         </div>
       )}

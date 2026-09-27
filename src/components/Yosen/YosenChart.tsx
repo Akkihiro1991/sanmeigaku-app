@@ -6,6 +6,9 @@ interface Props {
   yosen: Yosen;
 }
 
+/* true: 中央の主星のみ表示（他の星も計算するが非表示） */
+const SIMPLE_VIEW = true;
+
 type SeiBagKey = { [K in keyof Yosen]: Yosen[K] extends SeiBag ? K : never }[keyof Yosen];
 type StarCell = { kind: 'star'; key: SeiBagKey; circle?: string };
 type CornerCell = { kind: 'corner'; junisei: string };
@@ -36,13 +39,26 @@ export default function YosenChart({ yosen }: Props) {
   ];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 w-full min-w-0 max-w-md">
-      <h2 className="text-sm font-bold text-gray-500 mb-3 tracking-widest">陽 占</h2>
+    <div className="card-wafu p-5 sm:p-6 w-full min-w-0 flex flex-col">
+      <h2 className="heading-wafu mb-5">陽占</h2>
 
+      {SIMPLE_VIEW ? (
+        <div className="flex-1 flex flex-col items-center justify-center py-4">
+          <span className="font-serif text-xs text-washi-dim tracking-[0.3em] mb-4">中心星（自分）</span>
+          <div className="relative w-40 h-40 sm:w-44 sm:h-44 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full border border-kin/40" />
+            <div className="absolute inset-3 rounded-full border border-kin/20" />
+            <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(201,169,110,0.18),transparent_70%)]" />
+            <span className="relative font-serif text-3xl sm:text-4xl font-bold text-kin tracking-wider">
+              {yosen.chuo.sei}
+            </span>
+          </div>
+        </div>
+      ) : (<>
       <div className="grid grid-cols-3 gap-1 mb-2">
         {GRID.map((row, ri) =>
           row.map((cell, ci) => {
-            if (cell.kind === 'empty') {
+            if (cell.kind === 'empty' || (SIMPLE_VIEW && cell.kind === 'corner')) {
               return (
                 <div
                   key={`e-${ri}-${ci}`}
@@ -88,7 +104,7 @@ export default function YosenChart({ yosen }: Props) {
       <div className="border border-gray-200 rounded p-2 flex flex-col items-center bg-gray-50">
         <span className="text-[9px] text-gray-400 mb-0.5">奥（精神）</span>
         <span className="text-[13px] font-bold text-gray-800">{oku.sei}</span>
-        <span className="text-[9px] text-gray-500">{oku.junisei}</span>
+        {!SIMPLE_VIEW && <span className="text-[9px] text-gray-500">{oku.junisei}</span>}
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-0.5 text-[10px] text-gray-400">
@@ -106,6 +122,7 @@ export default function YosenChart({ yosen }: Props) {
           </div>
         ))}
       </div>
+      </>)}
     </div>
   );
 }
