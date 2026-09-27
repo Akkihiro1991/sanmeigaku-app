@@ -1,7 +1,8 @@
 import {
-  JIKKAN, JUNISHI, SETSU_DAYS, MONTH_SHI, MONTH_KAN_START,
-  GOGYO, GOGYO_SHI, INYO_KAN, ZOKKAN,
+  JIKKAN, JUNISHI, MONTH_SHI, MONTH_KAN_START,
+  GOGYO, GOGYO_SHI, INYO_KAN, ZOKKAN, ZOKKAN_28,
 } from './constants';
+import { getSetsuDay, getDaysFromSetsu } from './setsu';
 
 export interface Chu {
   kan: string;  // 天干
@@ -16,6 +17,7 @@ export interface Meisei {
   nishiIndex: number;
   nichikanIndex: number;
   nichishiIndex: number;
+  daysFromSetsu: number; // 節入り日を1日目とした日数（二十八元の判定に使う）
 }
 
 // ユリウス通日を計算
@@ -39,7 +41,7 @@ function toJulianDay(year: number, month: number, day: number): number {
 function calcNenchu(year: number, month: number, day: number): { chu: Chu; kanIndex: number } {
   let sanmeiYear = year;
   // 立春前（1月 or 2月の節入り前）は前年扱い
-  if (month < 2 || (month === 2 && day < SETSU_DAYS[2])) {
+  if (month < 2 || (month === 2 && day < getSetsuDay(year, 2))) {
     sanmeiYear = year - 1;
   }
   const kanIndex = ((sanmeiYear - 4) % 10 + 10) % 10;
@@ -54,7 +56,7 @@ function calcNenchu(year: number, month: number, day: number): { chu: Chu; kanIn
 // 月支は節入りで決まる（近似値で実装）
 function calcGetchu(year: number, month: number, day: number, nenkanIndex: number): Chu {
   // 節入り前は前月扱い
-  const setsuDay = SETSU_DAYS[month] ?? 6;
+  const setsuDay = getSetsuDay(year, month);
   let sanmeiMonth = month;
   if (day < setsuDay) {
     sanmeiMonth = month - 1;
@@ -113,6 +115,7 @@ export function calcMeisei(year: number, month: number, day: number): Meisei {
     nishiIndex,
     nichikanIndex,
     nichishiIndex,
+    daysFromSetsu: getDaysFromSetsu(year, month, day),
   };
 }
 
@@ -133,4 +136,13 @@ export function getInyo(kan: string): string {
 // 蔵干を取得（地支に蔵される天干）
 export function getZokkan(shi: string): string[] {
   return ZOKKAN[shi] ?? [];
+}
+
+// 二十八元：節入りからの日数で、その地支から使う蔵干を1つ選ぶ
+export function getZokkan28(shi: string, daysFromSetsu: number): string {
+  const table = ZOKKAN_28[shi] ?? [];
+  for (const [kan, lastDay] of table) {
+    if (daysFromSetsu <= lastDay) return kan;
+  }
+  return ZOKKAN[shi]?.[0] ?? '';
 }
